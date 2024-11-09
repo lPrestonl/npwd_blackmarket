@@ -17,7 +17,7 @@ import { NuiProvider } from 'fivem-nui-react-lib';
 import { RecoilRoot } from 'recoil';
 import i18next from 'i18next';
 import { createTheme } from '@mui/material';
-import { lightTheme } from './app.theme';
+import { darkTheme } from './app.theme';
 
 const Container = styled.div`
   position: relative;
@@ -73,11 +73,11 @@ const Root = () => {
     <HashRouter>
       <RecoilRoot>
         <React.Suspense fallback="LOOOOL">
-          <NuiProvider resource='mockapp'>
+          <NuiProvider resource='npwd_blackmarket'>
             <Container>
               <Background src={image} />
               <AppContainer>
-                <App settings={settings} i18n={i18next} theme={createTheme(lightTheme)} />
+                <App settings={settings} i18n={i18next} theme={createTheme(darkTheme)} />
               </AppContainer>
             </Container>
           </NuiProvider>

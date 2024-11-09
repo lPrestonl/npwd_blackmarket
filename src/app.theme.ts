@@ -1,7 +1,7 @@
-import { common, green } from '@mui/material/colors';
+import { common, green, purple } from '@mui/material/colors';
 import { ThemeOptions } from '@mui/material';
 
-export const APP_PRIMARY_COLOR = green[500];
+export const APP_PRIMARY_COLOR = purple[900];
 
 export const LIGHT_APP_TEXT_COLOR = common.white;
 export const DARK_APP_TEXT_COLOR = common.black;
@@ -46,6 +46,22 @@ export const darkTheme: ThemeOptions = {
     success: {
       main: '#2196f3',
       contrastText: LIGHT_APP_TEXT_COLOR,
+    },
+  },
+  components: {
+    MuiCardHeader: {
+      styleOverrides: {
+        root: {
+          fontSize: '1.5rem', // Adjust size as needed
+          padding: '10px',
+        },
+        title: {
+          fontSize: '1rem', // Title font size
+        },
+        subheader: {
+          fontSize: '.7rem', // Subtitle font size
+        },
+      },
     },
   },
 };

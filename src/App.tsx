@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { i18n } from 'i18next';
 import {
@@ -11,12 +11,18 @@ import {
 } from '@mui/material';
 import Header, { HEADER_HEIGHT } from './components/Header';
 import styled from '@emotion/styled';
-import { Link, NavLink, useHistory, useLocation } from 'react-router-dom';
+import { Link, NavLink, Route, useHistory, useLocation } from 'react-router-dom';
 import { path } from '../npwd.config';
-import { HomeRounded, InfoRounded } from '@mui/icons-material';
+import { Add, FormatListBulletedRounded, Person2Rounded } from '@mui/icons-material';
 import ThemeSwitchProvider from './ThemeSwitchProvider';
-import { RecoilRoot } from 'recoil';
+import { RecoilRoot, useSetRecoilState } from 'recoil';
+import Listings from './views/listings';
 import { useNuiEvent } from './hooks/useNuiEvent';
+import { listingsAtom } from './atoms/listings';
+import fetchNui from './utils/fetchNui';
+import { ServerPromiseResp } from './types/common';
+import { Listing } from '../shared/types';
+import { ListingsEvents } from '../shared/events';
 
 const Container = styled(Paper)`
   flex: 1;
@@ -52,6 +58,7 @@ interface AppProps {
 }
 
 export function App(props: AppProps) {
+  const setListings = useSetRecoilState(listingsAtom);
   const history = useHistory();
   const { pathname } = useLocation();
   const [nuiData, setNuiData] = useState(null);
@@ -63,6 +70,26 @@ export function App(props: AppProps) {
     setNuiData(data);
   });
 
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const response = await fetchNui<ServerPromiseResp<Listing[]>>(
+          ListingsEvents.GetListings
+        );
+        console.log(response)
+        setListings(response);
+        console.log('BlackMarket Listings fetched successfully!');
+      } catch (error) {
+        console.error('Error fetching BlackMarket Listings:', error);
+      }
+    };
+  
+    fetchListings();
+  
+    return () => {
+
+    };
+  }, [ListingsEvents.UpdateNUI]);
   //setPage(newPage);
   const handleChange = (_e: any, newPage: any) => {};
 
@@ -70,46 +97,36 @@ export function App(props: AppProps) {
     <StyledEngineProvider injectFirst>
       <ThemeSwitchProvider mode={props.theme.palette.mode}>
         <Container square elevation={0}>
-          <Header>Template app</Header>
+          <Header>Black Market</Header>
           <Content>
-            <div>
-              <h1>Template app - Heading 1</h1>
-              <h3>You are at {pathname}</h3>
-
-              {import.meta.env.MODE === 'game' && <h3>Running in game</h3>}
-
-              <button onClick={history.goBack}>Back to home</button>
-
-              {nuiData && (
-                <div>
-                  <h3>Random data from NUI</h3>
-                  <p>{JSON.stringify(nuiData)}</p>
-                </div>
-              )}
-            </div>
-
-            <Footer>
-              <LinkItem to="/">
-                <Typography>Home</Typography>
-              </LinkItem>
-            </Footer>
+          <Route exact path={path}>
+              <Listings />
+            </Route>
           </Content>
 
           <BottomNavigation value={page} onChange={handleChange} showLabels>
             <BottomNavigationAction
-              label={'Home'}
-              value="/home"
-              icon={<HomeRounded />}
+              label={'New Post'}
+              value="/create"
+              icon={<Add />}
+              component={NavLink}
+              to={`${path}/create`}
+            />
+            <BottomNavigationAction
+              label={'Listings'}
+              value="/listings"
+              color="secondary"
+              icon={<FormatListBulletedRounded />}
               component={NavLink}
               to={path}
             />
             <BottomNavigationAction
-              label={'About'}
-              value="/about"
+              label={'Account'}
+              value="/account"
               color="secondary"
-              icon={<InfoRounded />}
+              icon={<Person2Rounded />}
               component={NavLink}
-              to={path}
+              to={`${path}/account`}
             />
           </BottomNavigation>
         </Container>

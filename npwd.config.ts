@@ -5,11 +5,11 @@ interface Settings {
   language: 'en';
 }
 
-export const path = '/mockapp';
+export const path = '/npwd_blackmarket';
 export default (settings: Settings) => ({
-  id: 'MOCKAPP',
+  id: 'npwd_blackmarket',
   path,
-  nameLocale: "Mockapp", 
+  nameLocale: "Market", 
   color: '#fff',
   backgroundColor: '#333',
   icon: AppIcon,

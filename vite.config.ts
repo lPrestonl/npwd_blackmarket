@@ -14,7 +14,7 @@ export default defineConfig({
   plugins: [
     react(),
     federation({
-      name: 'mockapp',
+      name: 'npwd_blackmarket',
       filename: 'remoteEntry.js',
       exposes: {
         './config': './npwd.config.ts',

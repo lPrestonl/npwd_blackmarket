@@ -3,3 +3,7 @@ export interface ServerPromiseResp<T = undefined> {
 	status: 'ok' | 'error' | undefined;
 	data?: T;
 }
+
+export enum PhoneEvents {
+	TOGGLE_KEYS = 'npwd:toggleAllControls'
+}

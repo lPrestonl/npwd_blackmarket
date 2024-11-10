@@ -1,6 +1,6 @@
 let isFocused = false;
 const exps = global.exports
-
+// TODO: Add function to remove adds when player leaves.
 RegisterCommand(
     'focus',
     () => {

@@ -6,13 +6,18 @@ export interface User {
   phoneNumber?: string;
 }
 
+interface Item {
+  name: string;
+  quantity: number;
+}
+
 export interface Listing {
   id: number;
   creator: User;
 
   title: string;
   description: string;
-  body: string;
+  body: Item[];
 
   image?: string;
 

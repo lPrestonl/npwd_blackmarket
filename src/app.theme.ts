@@ -49,17 +49,44 @@ export const darkTheme: ThemeOptions = {
     },
   },
   components: {
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          padding: '5px',
+          borderRadius: '12px',
+          boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)', 
+          transition: 'transform 0.3s ease',
+          '&:hover': {
+            transform: 'scale(1.02)', // Scales up on hover
+          },
+        },
+      },
+    },
+    
+    MuiCardActionArea: {
+      styleOverrides: {
+        root: {
+          cursor: 'pointer',
+          transition: 'transform 0.3s ease, background-color 0.3s ease',
+          '&:hover': {
+            transform: 'scale(1.01)',
+            backgroundColor: '#444', // Slightly darkens on hover
+            boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.3)',
+          },
+        },
+      },
+    },
     MuiCardHeader: {
       styleOverrides: {
         root: {
-          fontSize: '1.5rem', // Adjust size as needed
+          fontSize: '1.5rem',
           padding: '10px',
         },
         title: {
-          fontSize: '1rem', // Title font size
+          fontSize: '1rem',
         },
         subheader: {
-          fontSize: '.7rem', // Subtitle font size
+          fontSize: '0.8rem',
         },
       },
     },

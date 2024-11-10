@@ -17,12 +17,14 @@ import {
   ReportRounded,
   RoomRounded,
 } from '@mui/icons-material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Card,
   CardActionArea,
   CardContent,
   CardHeader,
   CardMedia,
+  Collapse,
   Dialog,
   DialogActions,
   DialogContent,
@@ -48,11 +50,12 @@ import { userAtom } from '../atoms/user';
 import { useHistory } from 'react-router-dom';
 
 const StyledCardContent = styled(CardContent)`
-  word-break: break-all;
+  word-break: break-word;
+  paddingRight: '16px';
 `;
 
 const StyledDialogContent = styled(DialogContent)`
-  word-break: break-all;
+  word-break: break-word;
 `;
 
 interface PresentationCardProps {
@@ -60,6 +63,7 @@ interface PresentationCardProps {
   isPreview?: boolean;
   onClose?(): void;
 }
+
 
 const PresentationCard = ({ listing, onClose, isPreview }: PresentationCardProps) => {
   const history = useHistory();
@@ -131,35 +135,83 @@ const PresentationCard = ({ listing, onClose, isPreview }: PresentationCardProps
     history.push(`/messages/new?phoneNumber=${listing.creator.phoneNumber}`);
   };
 
+  const [expandedId, setExpandedId] = useState(null);
+
+  const handleExpandClick = (id: any) => {
+    setExpandedId((prevId) => {
+      // If the clicked card's ID is different from the previous expanded card, collapse the previous one and expand the new one
+      return prevId === id ? null : id;
+    });
+  };
+  
+  console.log(listingId)
   return (
     <div>
       <Card elevation={4}>
 
-        <CardActionArea onClick={() => setIsContentOpen(true)}>
+        <CardActionArea onClick={() => handleExpandClick(listingId)}>
           <>
             {/* {listing.image && (
               <CardMedia height={100} width={100} component="img" image={listing.image} />
             )} */}
 
-            <Divider light />
-
             <StyledCardContent>
+            <Typography variant="body2" sx={{ paddingLeft: '0px', paddingRight: "17px" }}>
               {listing?.description || 'Missing description'}
+            </Typography>
+
               {/* <ReactMarkdown
                 children={listing.description || 'Missing description'}
                 remarkPlugins={[remarkGfm]}
                 disallowedElements={['a']}
               /> */}
+            <Box
+              sx={{
+                position: 'absolute',
+                top: 13,
+                right: 8,
+                transition: 'transform 0.3s',
+                transform: expandedId ? 'rotate(180deg)' : 'rotate(0deg)',
+              }}
+            >
+          <ExpandMoreIcon />
+        </Box>
+              <Collapse in={expandedId} timeout="auto" unmountOnExit>
+                <CardContent>
+                <Divider light />
+      <Typography
+        variant="body2"
+        sx={{
+          fontSize: '1rem',
+          textAlign: 'center',
+          marginLeft: '-18px',
+          marginTop: '5px',
+          marginBottom: '-30px',
+        }}
+      >
+        {listing.body.length > 0 ? (
+          listing.body.map((item, index) => (
+            <Typography key={index} sx={{ margin: '5px 0' }}>
+              {item.name} <span style={{ color: 'grey' }}>x{item.quantity}</span>
+            </Typography>
+          ))
+        ) : (
+          'Missing Body Text'
+        )}
+      </Typography>
+                </CardContent>
+              </Collapse>
             </StyledCardContent>
           </>
+          <Divider light />
         </CardActionArea>
         <CardHeader
           title={listing.title || 'Missing title'}
           subheader={listing?.creator?.name || 'Unknown'}
           action={
-            <IconButton onClick={handleOpenMenu}>
-              <MoreVert />
-            </IconButton>
+              <IconButton onClick={handleOpenMenu}>
+                <MoreVert />
+              </IconButton>
           }
         />
       </Card>
@@ -193,14 +245,10 @@ const PresentationCard = ({ listing, onClose, isPreview }: PresentationCardProps
 
         <Divider />
 
-        <StyledDialogContent>
+        {/* <StyledDialogContent>
           {listing?.body || 'Missing content'}
-          {/* <ReactMarkdown
-            children={listing?.body || 'Missing content'}
-            remarkPlugins={[remarkGfm]}
-            disallowedElements={['a']}
-          /> */}
-        </StyledDialogContent>
+
+        </StyledDialogContent> */}
 
         <Divider />
 

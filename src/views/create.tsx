@@ -1,4 +1,4 @@
-import { ErrorRounded, ImageRounded, RefreshRounded } from '@mui/icons-material';
+import { ErrorRounded, RefreshRounded } from '@mui/icons-material';
 import {
   Alert,
   Button,
@@ -89,9 +89,6 @@ const Create = () => {
     setIsLoading(false);
   };
 
-  const handleGetImage = () => {
-    history.push(`/camera?referal=${path}/create`);
-  };
 
   if (isPreview) {
     return (
@@ -160,28 +157,6 @@ const Create = () => {
         />
 
         <Controller
-          name="image"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              placeholder="Image"
-              fullWidth
-              variant="outlined"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={handleGetImage}>
-                      <ImageRounded />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              {...field}
-            />
-          )}
-        />
-
-        <Controller
           name="description"
           control={control}
           rules={{
@@ -211,7 +186,8 @@ const Create = () => {
             />
           )}
         />
-
+          {/* TODO: Update to allow selection of items for the listing. */}
+          {/* Three fields per item. Select the item from inventory (To get name). Price. Currancy. */}
         <Controller
           name="body"
           control={control}
@@ -256,16 +232,6 @@ const Create = () => {
               }
             />
 
-            <FormControlLabel
-              label="Display your location"
-              control={
-                <Controller
-                  name="isPosition"
-                  control={control}
-                  render={({ field }) => <Checkbox {...field} checked={field.value} />}
-                />
-              }
-            />
           </FormGroup>
         </Stack>
 

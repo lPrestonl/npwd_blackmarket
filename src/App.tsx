@@ -77,7 +77,7 @@ export function App(props: AppProps) {
           ListingsEvents.GetListings
         );
         console.log(response)
-        setListings(response);
+        setListings(response); // TODO: Fix this? Not sure if it works.
         console.log('BlackMarket Listings fetched successfully!');
       } catch (error) {
         console.error('Error fetching BlackMarket Listings:', error);

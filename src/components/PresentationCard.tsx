@@ -1,9 +1,9 @@
 import React, { MouseEvent, useState } from 'react';
 import {
+  Item,
   Listing,
   ListingActionInput,
   ReportListingInput,
-  SetWaypointInput,
 } from '../../shared/types';
 
 import {
@@ -60,12 +60,13 @@ const StyledDialogContent = styled(DialogContent)`
 
 interface PresentationCardProps {
   listing: Listing;
+  selectedItems: Item[]
   isPreview?: boolean;
   onClose?(): void;
 }
 
 
-const PresentationCard = ({ listing, onClose, isPreview }: PresentationCardProps) => {
+const PresentationCard = ({ listing, onClose, isPreview, selectedItems }: PresentationCardProps) => {
   const history = useHistory();
   const user = useRecoilValue(userAtom);
   const setListings = useSetRecoilState(listingsAtom);
@@ -139,7 +140,6 @@ const PresentationCard = ({ listing, onClose, isPreview }: PresentationCardProps
 
   const handleExpandClick = (id: any) => {
     setExpandedId((prevId) => {
-      // If the clicked card's ID is different from the previous expanded card, collapse the previous one and expand the new one
       return prevId === id ? null : id;
     });
   };
@@ -159,7 +159,7 @@ const PresentationCard = ({ listing, onClose, isPreview }: PresentationCardProps
             <Typography variant="body2" sx={{ paddingLeft: '0px', paddingRight: "17px" }}>
               {listing?.description || 'Missing description'}
             </Typography>
-
+              {/* TODO: When one is open and you open another, close the first one. */}
               {/* <ReactMarkdown
                 children={listing.description || 'Missing description'}
                 remarkPlugins={[remarkGfm]}
@@ -176,7 +176,7 @@ const PresentationCard = ({ listing, onClose, isPreview }: PresentationCardProps
             >
           <ExpandMoreIcon />
         </Box>
-              <Collapse in={expandedId} timeout="auto" unmountOnExit>
+              <Collapse in={Boolean(expandedId)} timeout="auto" unmountOnExit>
                 <CardContent>
                 <Divider light />
       <Typography
@@ -189,14 +189,16 @@ const PresentationCard = ({ listing, onClose, isPreview }: PresentationCardProps
           marginBottom: '-30px',
         }}
       >
-        {listing.body.length > 0 ? (
-          listing.body.map((item, index) => (
+        {selectedItems.length > 0 ? (
+          selectedItems.map((item, index) => (
             <Typography key={index} sx={{ margin: '5px 0' }}>
-              {item.name} <span style={{ color: 'grey' }}>x{item.quantity}</span>
+              {item.name}
+              {/* You can display quantity if needed: */}
+              {/* {item.quantity && <span style={{ color: 'grey' }}> x{item.quantity}</span>} */}
             </Typography>
           ))
         ) : (
-          'Missing Body Text'
+          'No items selected'
         )}
       </Typography>
                 </CardContent>

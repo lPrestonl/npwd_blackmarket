@@ -18,10 +18,7 @@ export const MockedListings: Listing[] = [
     id: 1,
     title: 'PD Weapons',
     description: description,
-    body: [
-      { name: 'PD Rifle', quantity: 1 },
-      { name: 'PD Pistol', quantity: 1 },
-    ],
+    body: [],
     creator: MockedCreator,
     phoneNumber: '072-12312',
     isCallable: true,

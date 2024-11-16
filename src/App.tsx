@@ -23,6 +23,8 @@ import fetchNui from './utils/fetchNui';
 import { ServerPromiseResp } from './types/common';
 import { Listing } from '../shared/types';
 import { ListingsEvents } from '../shared/events';
+import Create from './views/create';
+
 
 const Container = styled(Paper)`
   flex: 1;
@@ -58,6 +60,7 @@ interface AppProps {
 }
 
 export function App(props: AppProps) {
+  
   const setListings = useSetRecoilState(listingsAtom);
   const history = useHistory();
   const { pathname } = useLocation();
@@ -65,20 +68,21 @@ export function App(props: AppProps) {
 
   const [page, setPage] = useState(pathname);
 
-  useNuiEvent('MOCKAPP', 'setRandomData', (data) => {
-    console.log(data);
-    setNuiData(data);
-  });
-
   useEffect(() => {
     const fetchListings = async () => {
       try {
         const response = await fetchNui<ServerPromiseResp<Listing[]>>(
           ListingsEvents.GetListings
         );
-        console.log(response)
-        setListings(response); // TODO: Fix this? Not sure if it works.
-        console.log('BlackMarket Listings fetched successfully!');
+        console.log(response);
+  
+        // Check if the response is successful and contains data
+        if (response.status === 'ok' && Array.isArray(response.data)) {
+          setListings(response.data); // Set the listings
+          console.log('BlackMarket Listings fetched successfully!');
+        } else {
+          console.error('No data found or error in response:', response);
+        }
       } catch (error) {
         console.error('Error fetching BlackMarket Listings:', error);
       }
@@ -86,11 +90,9 @@ export function App(props: AppProps) {
   
     fetchListings();
   
-    return () => {
-
-    };
+    return () => {};
   }, [ListingsEvents.UpdateNUI]);
-  //setPage(newPage);
+  
   const handleChange = (_e: any, newPage: any) => {};
 
   return (
@@ -102,27 +104,30 @@ export function App(props: AppProps) {
           <Route exact path={path}>
               <Listings />
             </Route>
+            <Route path={`${path}/create`}>
+              <Create />
+            </Route>
           </Content>
 
           <BottomNavigation value={page} onChange={handleChange} showLabels>
             <BottomNavigationAction
               label={'New Post'}
-              value="/create"
+              value={`${path}/create`}
+              color="secondary"
               icon={<Add />}
               component={NavLink}
               to={`${path}/create`}
             />
             <BottomNavigationAction
               label={'Listings'}
-              value="/listings"
-              color="secondary"
+              value={path}
               icon={<FormatListBulletedRounded />}
               component={NavLink}
               to={path}
             />
             <BottomNavigationAction
               label={'Account'}
-              value="/account"
+              value={`${path}/account`}
               color="secondary"
               icon={<Person2Rounded />}
               component={NavLink}
@@ -137,7 +142,7 @@ export function App(props: AppProps) {
 
 export default function WithProviders(props: AppProps) {
   return (
-    <RecoilRoot override key="mockapp">
+    <RecoilRoot override key="">
       <App {...props} />
     </RecoilRoot>
   );

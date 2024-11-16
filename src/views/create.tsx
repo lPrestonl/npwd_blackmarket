@@ -7,6 +7,7 @@ import {
   Fab,
   FormControlLabel,
   FormGroup,
+  FormHelperText,
   IconButton,
   InputAdornment,
   Stack,
@@ -20,18 +21,46 @@ import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { path } from '../../npwd.config';
 import { ListingsEvents } from '../../shared/events';
-import { Listing, CreateListingInput } from '../../shared/types';
+import { Listing, CreateListingInput, Item } from '../../shared/types';
 import { listingsAtom } from '../atoms/listings';
 import { userAtom } from '../atoms/user';
 import PresentationCard from '../components/PresentationCard';
 import { useLocaleStorageState } from '../hooks/useLocaleStorageState';
 import fetchNui from '../utils/fetchNui';
 import { MockedCreator } from '../utils/mocks';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { Theme, useTheme } from '@mui/material/styles';
+
+// TODO: Add useeffect to pull items. This makes it so everytime you go to the create tab it pulls a new list of inventory items.
+
+const items: Item[] = [
+  { name: 'PD Rifle' },
+  { name: 'PD SMG' },
+  { name: 'PD Pistol' },
+  { name: 'Handcuffs' },
+  { name: 'Bikini Tow Plushie' },
+];
+
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 const initialValues: CreateListingInput = {
   title: '',
   description: '',
-  body: '',
+  body: [],
   image: '',
   isCallable: false,
   isPosition: false,
@@ -51,13 +80,29 @@ const Create = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isPreview, setIsPreview] = useState(false);
 
-  const params = useParams();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
 
   const { getValues, control, handleSubmit, setValue, reset } = useForm<CreateListingInput>({
     defaultValues,
   });
+
+  const [selectedItems, setSelectedItems] = useState<Item[]>([]);
+  const handleItemChange = (event: SelectChangeEvent<string[]>) => {
+    const { value } = event.target;
+    
+    // Check if the value is an array of selected item names
+    const selectedNames = value as string[];
+  
+    // Find the full items from your available items based on the selected names
+    const updatedItems = selectedNames.map((name) => {
+      return items.find((item) => item.name === name) || null; // Find matching item by name
+    }).filter(item => item !== null) as Item[]; // Filter out nulls
+  
+    // Set the updated selected items to the state
+    setSelectedItems(updatedItems);
+  };
+
 
   useEffect(() => {
     const image = query.get('image') || defaultValues.image;
@@ -100,13 +145,10 @@ const Create = () => {
             id: -1,
             creator: MockedCreator,
             phoneNumber: user?.phoneNumber ?? 'Unknown',
-            waypoint: {
-              x: 0,
-              y: 0,
-            },
           }}
+          selectedItems={selectedItems}
         />
-
+  
         <Box sx={{ position: 'absolute', bottom: '4.5rem', right: '1.5rem' }}>
           <Fab sx={{ color: '#fff' }} onClick={() => setIsPreview(false)} variant="extended">
             Close preview
@@ -188,38 +230,41 @@ const Create = () => {
         />
           {/* TODO: Update to allow selection of items for the listing. */}
           {/* Three fields per item. Select the item from inventory (To get name). Price. Currancy. */}
-        <Controller
-          name="body"
-          control={control}
-          rules={{
-            required: {
-              message: 'Required field',
-              value: true,
-            },
-            minLength: {
-              message: 'Min length 50',
-              value: 50,
-            },
-            maxLength: {
-              message: 'Max length 3000',
-              value: 3000,
-            },
-          }}
-          render={({ field, fieldState }) => (
-            <TextField
-              placeholder="Body"
-              fullWidth
-              variant="outlined"
-              error={Boolean(fieldState.error)}
-              helperText={fieldState.error?.message ?? ''}
-              rows={6}
-              multiline
-              {...field}
-            />
-          )}
-        />
+          {/* exports.ox_inventory:GetPlayerItems() */}
+          <Controller
+            name="body"
+            control={control}
+            rules={{
+              required: {
+                message: 'Please select at least one item.',
+                value: true,
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <FormControl error={Boolean(fieldState.error)}>
+                <InputLabel id="demo-multiple-name-label">Items</InputLabel>
+                <Select
+                  labelId="demo-multiple-name-label"
+                  id="demo-multiple-name"
+                  multiple
+                  value={selectedItems.map(item => item.name)} // Binding state to the value
+                  onChange={handleItemChange}
+                  input={<OutlinedInput label="Items" />}
+                  MenuProps={MenuProps}
+                >
+                  {items.map((itemOption) => (
+                    <MenuItem key={itemOption.name} value={itemOption.name}>
+                      {itemOption.name}
+                    </MenuItem>
+                  ))}
+                </Select>
 
-        <Stack spacing={0.5}>
+                <FormHelperText>{fieldState.error?.message}</FormHelperText>
+              </FormControl>
+            )}
+          />
+
+        {/* <Stack spacing={0.5}>
           <FormGroup>
             <FormControlLabel
               label="Show phone number"
@@ -233,7 +278,7 @@ const Create = () => {
             />
 
           </FormGroup>
-        </Stack>
+        </Stack> */}
 
         {error && (
           <Alert

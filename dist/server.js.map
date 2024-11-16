@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../server/server.ts"],
+  "sourcesContent": ["console.log('Server started.');\r\n"],
+  "mappings": ";AAAA,QAAQ,IAAI,iBAAiB;",
+  "names": []
+}

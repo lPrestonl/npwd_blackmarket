@@ -33,5 +33,5 @@ RegisterKeyMapping('focus', 'Toggle Phone', 'keyboard', 'n');
 
 RegisterCommand('mocknui', () => {
     console.log('Sending mock nui message');
-    global.exports["npwd"].sendNPWDMessage('MOCKAPP', 'setRandomData', { test: 'test' });    
+    global.exports["npwd"].sendNPWDMessage('npwd_blackmarket', 'setRandomData', { test: 'test' });    
 }, false)

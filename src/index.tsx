@@ -72,7 +72,7 @@ const Root = () => {
   return (
     <HashRouter>
       <RecoilRoot>
-        <React.Suspense fallback="LOOOOL">
+        <React.Suspense fallback="Loading">
           <NuiProvider resource='npwd_blackmarket'>
             <Container>
               <Background src={image} />

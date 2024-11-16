@@ -1,3 +1,4 @@
+import { Key } from 'react';
 import { ReportReason } from './events';
 
 export interface User {
@@ -6,9 +7,9 @@ export interface User {
   phoneNumber?: string;
 }
 
-interface Item {
+export interface Item {
   name: string;
-  quantity: number;
+  quantity?: number;
 }
 
 export interface Listing {
@@ -26,11 +27,6 @@ export interface Listing {
   isCallable: boolean;
   isPosition: boolean;
 
-  waypoint?: {
-    x: number;
-    y: number;
-  };
-
   reports?: number;
   deletedAt?: number;
 }
@@ -44,8 +40,4 @@ export type ReportListingInput = {
 
 export type ListingActionInput = {
   listingId: Listing['id'];
-};
-
-export type SetWaypointInput = {
-  waypoint: Listing['waypoint'];
 };

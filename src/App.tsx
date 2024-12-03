@@ -24,6 +24,7 @@ import { ServerPromiseResp } from './types/common';
 import { Listing } from '../shared/types';
 import { ListingsEvents } from '../shared/events';
 import Create from './views/create';
+import { NuiProvider } from 'fivem-nui-react-lib';
 
 
 const Container = styled(Paper)`
@@ -142,8 +143,10 @@ export function App(props: AppProps) {
 
 export default function WithProviders(props: AppProps) {
   return (
-    <RecoilRoot override key="">
+    <RecoilRoot override key="npwd_blackmarket">
+      <NuiProvider resource={'npwd_blackmarket'}>
       <App {...props} />
+      </NuiProvider>
     </RecoilRoot>
   );
 }

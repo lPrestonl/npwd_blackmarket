@@ -160,11 +160,6 @@ const PresentationCard = ({ listing, onClose, isPreview, selectedItems }: Presen
               {listing?.description || 'Missing description'}
             </Typography>
               {/* TODO: When one is open and you open another, close the first one. */}
-              {/* <ReactMarkdown
-                children={listing.description || 'Missing description'}
-                remarkPlugins={[remarkGfm]}
-                disallowedElements={['a']}
-              /> */}
             <Box
               sx={{
                 position: 'absolute',
@@ -193,8 +188,7 @@ const PresentationCard = ({ listing, onClose, isPreview, selectedItems }: Presen
           selectedItems.map((item, index) => (
             <Typography key={index} sx={{ margin: '5px 0' }}>
               {item.name}
-              {/* You can display quantity if needed: */}
-              {/* {item.quantity && <span style={{ color: 'grey' }}> x{item.quantity}</span>} */}
+              {item.quantity && <span style={{ color: 'grey' }}> x{item.quantity}</span>}
             </Typography>
           ))
         ) : (

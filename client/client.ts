@@ -1,37 +1,30 @@
-let isFocused = false;
-const exps = global.exports
-// TODO: Add function to remove adds when player leaves.
-RegisterCommand(
-    'focus',
-    () => {
-        if (isFocused) {
-            SetNuiFocus(false, false);
-            SetNuiFocusKeepInput(false);
-            isFocused = false;
-            return;
-        }
+import { ListingsEvents } from '../shared/events';
+import { ClientUtils, RegisterNuiCB } from '@project-error/pe-utils';
 
-        //SendNUIMessage({ type: 'RANDOM', payload: 'Hello from client' });
-        global.exports["npwd"].sendUIMessage('RANDOM', 'Hello from client');
+export const ClUtils = new ClientUtils({ promiseTimout: 200 });
 
-        SetNuiFocusKeepInput(true);
-        SetNuiFocus(true, true);
-        isFocused = true;
-    },
-    false
-);
+const npwdExports = global.exports['npwd'];
 
-RegisterCommand(
-    'unfocus',
-    () => {
-        SetNuiFocus(false, false);
-    },
-    false
-);
+onNet(ListingsEvents.UpdateNUI, () => {
+  npwdExports.sendNPWDMessage({ type: ListingsEvents.UpdateNUI });
+});
 
-RegisterKeyMapping('focus', 'Toggle Phone', 'keyboard', 'n');
 
-RegisterCommand('mocknui', () => {
-    console.log('Sending mock nui message');
-    global.exports["npwd"].sendNPWDMessage('npwd_blackmarket', 'setRandomData', { test: 'test' });    
-}, false)
+RegisterNuiProxy(ListingsEvents.GetUser);
+RegisterNuiProxy(ListingsEvents.GetListings);
+RegisterNuiProxy(ListingsEvents.CreateListing);
+RegisterNuiProxy(ListingsEvents.DeleteListing);
+RegisterNuiProxy(ListingsEvents.ReportListing);
+
+function RegisterNuiProxy(event: string) {
+  RegisterNuiCallbackType(event);
+  on(`__cfx_nui:${event}`, async (data: unknown, cb: CallableFunction) => {
+    try {
+      const res = await ClUtils.emitNetPromise(event, data);
+      cb(res);
+    } catch (e) {
+      console.error('Error encountered while listening to resp. Error:', e);
+      cb({ status: 'error' });
+    }
+  });
+}

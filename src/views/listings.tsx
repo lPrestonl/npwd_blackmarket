@@ -11,12 +11,6 @@ const Listings = () => {
   const listings = useRecoilValue(listingsAtom);
   const [search, setSearch] = useState('');
 
-  const handleitemChange = (event: SelectChangeEvent<typeof selectedItems>) => {
-    const { value } = event.target;
-    console.log('Selected items:', value); // Check what values are selected
-    setSelectedItems(value);
-  };
-
   const filteredListing = listings.filter((listing) =>
     listing.title?.toLowerCase().includes(search.toLowerCase()),
   );

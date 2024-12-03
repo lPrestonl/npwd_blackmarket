@@ -18,7 +18,7 @@ export interface Listing {
 
   title: string;
   description: string;
-  body: Item[];
+  body: [];
 
   image?: string;
 
@@ -32,6 +32,8 @@ export interface Listing {
 }
 
 export type CreateListingInput = Omit<Listing, 'id' | 'creator' | 'phoneNumber'>;
+
+export type UpdateUserInput = Omit<User, 'citizenId' | 'phoneNumber'>
 
 export type ReportListingInput = {
   listingId: Listing['id'];

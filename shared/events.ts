@@ -1,5 +1,6 @@
 export enum ListingsEvents {
     GetUser = 'npwd-blackmarket:getUser',
+    UpdateUser = 'npwd-blackmarket:updateUser',
     GetListings = 'npwd-blackmarket:getListings',
     CreateListing = 'npwd-blackmarket:createListing',
     ReportListing = 'npwd-blackmarket:reportListing',

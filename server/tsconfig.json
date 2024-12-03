@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["@citizenfx/server"]
+    "types": ["@citizenfx/server"],
+    "lib": ["es2015", "dom"]
   }
 }

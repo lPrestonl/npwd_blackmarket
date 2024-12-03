@@ -90,17 +90,30 @@ const Create = () => {
   const [selectedItems, setSelectedItems] = useState<Item[]>([]);
   const handleItemChange = (event: SelectChangeEvent<string[]>) => {
     const { value } = event.target;
-    
+  
     // Check if the value is an array of selected item names
     const selectedNames = value as string[];
   
-    // Find the full items from your available items based on the selected names
-    const updatedItems = selectedNames.map((name) => {
-      return items.find((item) => item.name === name) || null; // Find matching item by name
-    }).filter(item => item !== null) as Item[]; // Filter out nulls
+    // Create a map to count the occurrences of each item name
+    const itemMap = new Map<string, number>();
   
-    // Set the updated selected items to the state
+    selectedNames.forEach((name) => {
+      itemMap.set(name, (itemMap.get(name) || 0) + 1);
+    });
+  
+    const updatedItems: Item[] = Array.from(itemMap.entries()).map(([name, quantity]) => {
+      const matchingItem = items.find((item) => item.name === name);
+  
+      if (matchingItem) {
+        return { ...matchingItem, quantity };
+      }
+  
+      return null; 
+    }).filter(item => item !== null) as Item[]; 
+  
     setSelectedItems(updatedItems);
+
+    console.log('Updated selected items:', updatedItems);
   };
 
 
@@ -235,9 +248,14 @@ const Create = () => {
             name="body"
             control={control}
             rules={{
-              required: {
-                message: 'Please select at least one item.',
-                value: true,
+              validate: {
+                hasItems: (value) => {
+                  // Check if selectedItems is an array with at least one item
+                  if (selectedItems.length === 0) {
+                    return 'Please select at least one item.';
+                  }
+                  return true;  // Valid input, no error
+                },
               },
             }}
             render={({ field, fieldState }) => (
@@ -258,7 +276,6 @@ const Create = () => {
                     </MenuItem>
                   ))}
                 </Select>
-
                 <FormHelperText>{fieldState.error?.message}</FormHelperText>
               </FormControl>
             )}

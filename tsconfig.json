@@ -4,12 +4,13 @@
     "noImplicitAny": true,
     "strictNullChecks": true,
     "module": "esnext",
-    "target": "es5",
+    "target": "es2015",
     "jsx": "react",
     "allowJs": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "lib": ["es2015", "dom"]
   },
   "exclude": ["server", "client"]
 }

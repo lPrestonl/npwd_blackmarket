@@ -6,29 +6,31 @@ import { isEnvBrowser } from '../utils/misc';
 import { MockedListings, MockedCreator } from '../utils/mocks';
 
 export const listingsAtom = atom<Listing[]>({
-  key: 'npwd-listings:listings',
+  key: 'npwd-blackmarket:listings',
   default: selector<Listing[]>({
-    key: 'npwd-listings:defaultListings',
+    key: 'npwd-blackmarket:defaultListings',
     get: async () => {
-      try {
-        const listings = await fetchNui<Listing[]>(
-          ListingsEvents.GetListings,
-        );
+      console.log('get')
+      return [];
+      // try {
+      //   const listings = await fetchNui<Listing[]>(
+      //     ListingsEvents.GetListings,
+      //   );
 
-        if (!listings) {
-          console.log('no response data (listings)');
-          return [];
-        }
+      //   if (!listings) {
+      //     console.log('no response data (listings)');
+      //     return [];
+      //   }
 
-        return listings;
-      } catch (error) {
-        console.error(error);
-        if (isEnvBrowser()) {
-          return MockedListings;
-        }
+      //   return listings;
+      // } catch (error) {
+      //   console.error(error);
+      //   if (isEnvBrowser()) {
+      //     return MockedListings;
+      //   }
 
-        return [];
-      }
+      //   return [];
+      // }
     },
   }),
 });
